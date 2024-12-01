@@ -10,7 +10,7 @@
         let isGameStarted = false; // Variable para el estado del juego
 
         // Conectarse al WebSocket para verificar el estado del juego
-        const socket = new WebSocket("ws://localhost:8080");
+        const socket = new WebSocket("wss://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net:8080");
 
         socket.onmessage = (event) => {
             try {
