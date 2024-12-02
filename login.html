@@ -42,6 +42,8 @@
             submitButton.disabled = usernameInput.value.trim() === "" || isGameStarted;
         }
 
+        window.handleInput = handleInput;
+
         // Manejar el envío del formulario
         function handleSubmit(event) {
             event.preventDefault();
