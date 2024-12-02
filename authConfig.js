@@ -1,6 +1,6 @@
 const msalConfig = {
     auth: {
-        clientId: "TU_CLIENT_ID", // Application (client) ID de Azure Portal
+        clientId: "d9990801-97e6-4f05-ac1c-13bfe7749cd9", // Application (client) ID de Azure Portal
         authority: "https://login.microsoftonline.com/common", // Endpoint para autenticación
         redirectUri: "https://brave-beach-04727251e.4.azurestaticapps.net", // O la URL de producción
     },
