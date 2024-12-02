@@ -6,6 +6,8 @@
     <link rel="icon" href="./images/favicon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
+    <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
+    <script src="./authConfig.js"></script>
     <script>
         let isGameStarted = false; // Variable para el estado del juego
 
@@ -43,13 +45,13 @@
         function handleSubmit(event) {
             event.preventDefault();
 
+            const usernameInput = document.querySelector('input[type="text"]');
+            const username = localStorage.getItem("username") || usernameInput.value.trim();
+
             if (isGameStarted) {
                 document.getElementById("gameStartedMessage").style.display = "block";
                 return;
             }
-
-            const usernameInput = document.querySelector('input[type="text"]');
-            const username = usernameInput.value.trim();
 
             if (!username) {
                 alert("Por favor, ingresa un nombre válido.");
@@ -70,10 +72,29 @@
             }
         }
 
-        window.onload = () => {
-            // Asegurarse de que el botón esté deshabilitado al cargar la página
-            document.getElementById("submitButton").disabled = true;
-        };
+        document.addEventListener("DOMContentLoaded", () => {
+            const msalInstance = new msal.PublicClientApplication(msalConfig);
+
+            // Verificar si el usuario ya está autenticado
+            const account = msalInstance.getAllAccounts()[0];
+            if (account) {
+                console.log("Usuario autenticado:", account.username);
+                localStorage.setItem("username", account.username);
+                window.location.href = "./game.html"; // Redirigir al juego si ya está autenticado
+            }
+
+            // Configurar el botón de inicio de sesión con Microsoft
+            document.getElementById("microsoftLoginButton").addEventListener("click", async () => {
+                try {
+                    const loginResponse = await msalInstance.loginPopup(loginRequest);
+                    console.log("Usuario autenticado:", loginResponse.account.username);
+                    localStorage.setItem("username", loginResponse.account.username);
+                    window.location.href = "./game.html"; // Redirige al juego después de autenticarse
+                } catch (error) {
+                    console.error("Error al iniciar sesión:", error);
+                }
+            });
+        });
     </script>
 </head>
 <body>
@@ -90,6 +111,7 @@
         <!-- Botones de acción -->
         <div class="button-container">
             <button id="submitButton" type="submit">Iniciar Sesión</button>
+            <button id="microsoftLoginButton" type="button">Iniciar sesión con Microsoft</button>
             <button type="button" onclick="location.href='./index.html'">Volver a la página principal</button>
         </div>
     </form>
