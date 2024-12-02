@@ -6,6 +6,20 @@
     <title>Dodge Koopa - Juego</title>
     <link rel="stylesheet" href="game.css">
     <link rel="icon" href="images/favicon.png" type="image/png">
+
+    <script>
+         document.addEventListener("DOMContentLoaded", () => {
+        const playerNameElement = document.getElementById("playerName");
+        const username = localStorage.getItem("username"); // Obtén el nombre desde localStorage
+    
+        if (username) {
+            playerNameElement.textContent = `Jugador: ${username}`;
+        } else {
+            playerNameElement.textContent = "Jugador: Invitado"; // Valor por defecto si no hay usuario
+        }
+    });
+    </script>
+
 </head>
 <body>
     <div id="topContainer">
