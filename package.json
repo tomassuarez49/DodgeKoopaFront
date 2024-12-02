@@ -1,4 +1,12 @@
 {
+  "name": "dodge-koopa-game",
+  "version": "1.0.0",
+  "description": "Dodge Koopa Game Frontend",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build required for this project.'",
+    "start": "echo 'No start command for static site.'"
+  },
   "dependencies": {
     "@azure/msal-browser": "^3.27.0"
   }
