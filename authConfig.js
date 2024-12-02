@@ -1,17 +1,26 @@
-const msalConfig = {
-    auth: {
-        clientId: "d9990801-97e6-4f05-ac1c-13bfe7749cd9", // Application (client) ID de Azure Portal
-        authority: "https://login.microsoftonline.com/common", // Endpoint para autenticación
-        redirectUri: "https://brave-beach-04727251e.4.azurestaticapps.net/game.html", // O la URL de producción
-    },
-    cache: {
-        cacheLocation: "localStorage", // O sessionStorage
-        storeAuthStateInCookie: true, // Mejor compatibilidad con navegadores antiguos
-    },
-};
+export async function getMsalConfig() {
+    // Cambia la URL a la de tu backend desplegado
+    const response = await fetch('https://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net/api/secret/clientid');
+    if (!response.ok) {
+        throw new Error('Error al obtener el Client ID desde el backend');
+    }
 
-const loginRequest = {
+    const secret = await response.json();
+
+    // Configuración dinámica
+    return {
+        auth: {
+            clientId: secret.value, // Obtiene el Client ID desde el backend
+            authority: "https://login.microsoftonline.com/common", // Ajusta según tu tenant
+            redirectUri: "https://brave-beach-04727251e.4.azurestaticapps.net/game.html", // URL de tu frontend en producción
+        },
+        cache: {
+            cacheLocation: "localStorage", // Cambia a sessionStorage si prefieres
+            storeAuthStateInCookie: true, // Compatibilidad con navegadores antiguos
+        },
+    };
+}
+
+export const loginRequest = {
     scopes: ["user.read"], // Permisos requeridos (Microsoft Graph, etc.)
 };
-
-export { msalConfig, loginRequest };

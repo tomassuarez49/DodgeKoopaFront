@@ -77,29 +77,35 @@
 
         window.handleSubmit = handleSubmit;
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const msalInstance = new msal.PublicClientApplication(msalConfig);
+        document.addEventListener("DOMContentLoaded", async () => {
+    try {
+        // Obtiene la configuración dinámica desde el backend
+        const msalConfig = await getMsalConfig();
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
 
-            // Verificar si el usuario ya está autenticado
-            const account = msalInstance.getAllAccounts()[0];
-            if (account) {
-                console.log("Usuario autenticado:", account.username);
-                localStorage.setItem("username", account.username);
-                window.location.href = "./game.html"; // Redirigir al juego si ya está autenticado
+        // Verifica si el usuario ya está autenticado
+        const account = msalInstance.getAllAccounts()[0];
+        if (account) {
+            console.log("Usuario autenticado:", account.username);
+            localStorage.setItem("username", account.username);
+            window.location.href = "./game.html"; // Redirige al juego si ya está autenticado
+        }
+
+        // Configura el botón para inicio de sesión con Microsoft
+        document.getElementById("microsoftLoginButton").addEventListener("click", async () => {
+            try {
+                const loginResponse = await msalInstance.loginPopup(loginRequest);
+                console.log("Usuario autenticado:", loginResponse.account.username);
+                localStorage.setItem("username", loginResponse.account.username);
+                window.location.href = "./game.html"; // Redirige al juego después del inicio de sesión
+            } catch (error) {
+                console.error("Error al iniciar sesión:", error);
             }
-
-            // Configurar el botón de inicio de sesión con Microsoft
-            document.getElementById("microsoftLoginButton").addEventListener("click", async () => {
-                try {
-                    const loginResponse = await msalInstance.loginPopup(loginRequest);
-                    console.log("Usuario autenticado:", loginResponse.account.username);
-                    localStorage.setItem("username", loginResponse.account.username);
-                    window.location.href = "./game.html"; // Redirige al juego después de autenticarse
-                } catch (error) {
-                    console.error("Error al iniciar sesión:", error);
-                }
-            });
         });
+    } catch (error) {
+        console.error("Error al inicializar MSAL:", error);
+    }
+    });
     </script>
 </head>
 <body>

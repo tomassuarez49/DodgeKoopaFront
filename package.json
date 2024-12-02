@@ -8,6 +8,8 @@
     "start": "echo 'No start command for static site.'"
   },
   "dependencies": {
+    "@azure/identity": "^4.5.0",
+    "@azure/keyvault-secrets": "^4.9.0",
     "@azure/msal-browser": "^3.27.0"
   }
 }
