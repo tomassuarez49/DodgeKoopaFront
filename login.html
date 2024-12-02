@@ -7,8 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
     <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
-    <script src="./authConfig.js"></script>
-    <script>
+    <script type="module">
+        import { msalConfig, loginRequest } from './authConfig.js';
+
         let isGameStarted = false; // Variable para el estado del juego
 
         // Conectarse al WebSocket para verificar el estado del juego
@@ -46,7 +47,7 @@
             event.preventDefault();
 
             const usernameInput = document.querySelector('input[type="text"]');
-            const username = localStorage.getItem("username") || usernameInput.value.trim();
+            const username = usernameInput.value.trim();
 
             if (isGameStarted) {
                 document.getElementById("gameStartedMessage").style.display = "block";
