@@ -75,6 +75,8 @@
             }
         }
 
+        window.handleSubmit = handleSubmit;
+
         document.addEventListener("DOMContentLoaded", () => {
             const msalInstance = new msal.PublicClientApplication(msalConfig);
 
