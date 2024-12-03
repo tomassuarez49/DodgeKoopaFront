@@ -235,7 +235,7 @@ function handleServerMessage(event) {
 
 
 function initializeWebSocket() {
-    socket = new WebSocket('wss://dodgekoopaback2-fpgmhvgga6cmdna2.centralus-01.azurewebsites.net');// Cambia localhost si el servidor está en otro lugar
+    socket = new WebSocket('wss://13.89.39.238');// Cambia localhost si el servidor está en otro lugar
 
     socket.onopen = () => {
         console.log('WebSocket conectado.');
