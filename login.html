@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./styles.css">
     <script src="https://alcdn.msauth.net/browser/2.32.0/js/msal-browser.min.js"></script>
     <script type="module">
-        import { getMsalConfig, loginRequest } from './authConfig.js';
+        import { msalConfig, loginRequest } from './authConfig.js';
 
         let isGameStarted = false; // Variable para el estado del juego
 
@@ -105,7 +105,7 @@
     } catch (error) {
         console.error("Error al inicializar MSAL:", error);
     }
-});
+    });
     </script>
 </head>
 <body>
