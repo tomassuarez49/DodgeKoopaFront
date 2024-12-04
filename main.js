@@ -235,7 +235,7 @@ function handleServerMessage(event) {
 
 
 function initializeWebSocket() {
-    socket = new WebSocket('ws://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
+    socket = new WebSocket('wss://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
 
     socket.onopen = () => {
         console.log('WebSocket conectado.');

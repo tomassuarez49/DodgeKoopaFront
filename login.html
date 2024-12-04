@@ -13,7 +13,7 @@
         let isGameStarted = false; // Variable para el estado del juego
 
         // Conectarse al WebSocket para verificar el estado del juego
-        const socket = new WebSocket("ws://koopabalancer.centralus.cloudapp.azure.com");
+        const socket = new WebSocket("wss://koopabalancer.centralus.cloudapp.azure.com");
 
         socket.onmessage = (event) => {
             try {
