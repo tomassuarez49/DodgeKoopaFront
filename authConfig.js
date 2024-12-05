@@ -18,9 +18,25 @@ export async function getMsalConfig() {
             cacheLocation: "localStorage", // Cambia a sessionStorage si prefieres
             storeAuthStateInCookie: true, // Compatibilidad con navegadores antiguos
         },
+        system: {
+            loggerOptions: {
+                loggerCallback: (level, message, containsPii) => {
+                    if (level === msal.LogLevel.Error) {
+                        console.error(message);
+                    } else if (level === msal.LogLevel.Info) {
+                        console.info(message);
+                    } else if (level === msal.LogLevel.Verbose) {
+                        console.debug(message);
+                    } else if (level === msal.LogLevel.Warning) {
+                        console.warn(message);
+                    }
+                },
+                piiLoggingEnabled: false,
+            },
+        },
     };
 }
 
 export const loginRequest = {
-    scopes: ["user.read"], // Permisos requeridos (Microsoft Graph, etc.)
+    scopes: ["User.Read"], // Permisos requeridos (Microsoft Graph, etc.)
 };
