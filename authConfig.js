@@ -5,7 +5,8 @@ export async function getMsalConfig() {
         throw new Error('Error al obtener el Client ID desde el backend');
     }
 
-    const secret = await response.json();
+    const { secret } = await response.json();
+
 
     // Configuración dinámica
     return {
