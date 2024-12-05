@@ -20,18 +20,10 @@ export async function getMsalConfig() {
         },
         system: {
             loggerOptions: {
-                loggerCallback: (level, message, containsPii) => {
-                    if (level === msal.LogLevel.Error) {
-                        console.error(message);
-                    } else if (level === msal.LogLevel.Info) {
-                        console.info(message);
-                    } else if (level === msal.LogLevel.Verbose) {
-                        console.debug(message);
-                    } else if (level === msal.LogLevel.Warning) {
-                        console.warn(message);
-                    }
+                loggerCallback: (level, message) => {
+                    console.log(`[${level}]: ${message}`);
                 },
-                piiLoggingEnabled: false,
+                piiLoggingEnabled: true,
             },
         },
     };
