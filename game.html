@@ -8,16 +8,28 @@
     <link rel="icon" href="images/favicon.png" type="image/png">
 
     <script>
-         document.addEventListener("DOMContentLoaded", () => {
-        const playerNameElement = document.getElementById("playerName");
-        const username = localStorage.getItem("username"); // Obtén el nombre desde localStorage
-    
-        if (username) {
-            playerNameElement.textContent = `Jugador: ${username}`;
-        } else {
-            playerNameElement.textContent = "Jugador: Invitado"; // Valor por defecto si no hay usuario
-        }
-    });
+        document.addEventListener("DOMContentLoaded", () => {
+    const playerNameElement = document.getElementById("playerName");
+
+    // Función para sanitizar la entrada
+    function sanitizeInput(input) {
+        return String(input)
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    const username = localStorage.getItem("username");
+
+    if (username) {
+        const sanitizedUsername = sanitizeInput(username); // Sanitiza el valor obtenido
+        playerNameElement.textContent = `Jugador: ${sanitizedUsername}`;
+    } else {
+        playerNameElement.textContent = "Jugador: Invitado";
+    }
+});
     </script>
 
 </head>
