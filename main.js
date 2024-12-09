@@ -257,24 +257,31 @@ function initializeWebSocket() {
     };
 }
 
+function getSecureRandomIndex(arrayLength) {
+    const randomValues = new Uint32Array(1);
+    window.crypto.getRandomValues(randomValues); // Genera un valor seguro aleatorio
+    return randomValues[0] % arrayLength; // Normaliza el valor para el rango
+}
+
+
 function placeBall() {
     let validPositionFound = false;
 
-    while (!validPositionFound) {
-        const randomPosition = Math.floor(Math.random() * gridCells.length);
+while (!validPositionFound) {
+    const randomPosition = getSecureRandomIndex(gridCells.length);
 
-        if (!obstacles.includes(randomPosition) && !isPositionOccupied(randomPosition)) {
-            ballPosition = randomPosition;
-            validPositionFound = true;
+    if (!obstacles.includes(randomPosition) && !isPositionOccupied(randomPosition)) {
+        ballPosition = randomPosition;
+        validPositionFound = true;
 
-            // Notificar al servidor sobre la nueva posición de la pelota
-            socket.send(JSON.stringify({
-                type: 'ballUpdate',
-                position: ballPosition,
-                isBallOnBoard: true,
-            }));
-        }
+        // Notificar al servidor sobre la nueva posición de la pelota
+        socket.send(JSON.stringify({
+            type: 'ballUpdate',
+            position: ballPosition,
+            isBallOnBoard: true,
+        }));
     }
+}
 
     console.log(`Pelota colocada en la posición: ${ballPosition}`);
     updateGrid();
@@ -371,8 +378,8 @@ function getNewBallPosition(side) {
         return !isBlocked && !isOccupied;
     });
 
-    // Seleccionar una posición aleatoria válida
-    const randomIndex = Math.floor(Math.random() * validPositions.length);
+    // Seleccionar una posición aleatoria válida de manera segura
+    const randomIndex = getSecureRandomIndex(validPositions.length);
     return validPositions[randomIndex];
 }
 
