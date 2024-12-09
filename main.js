@@ -32,7 +32,6 @@ function createGrid() {
 }
 
 function addPlayerToGrid() {
-        const randomPosition = getRandomInt(0, 109); // Tamaño del grid (10x11)
     playerPosition = assignedPosition;
     playerColor = getRandomColor();
 
