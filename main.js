@@ -378,7 +378,6 @@ function getNewBallPosition(side) {
         return !isBlocked && !isOccupied;
     });
 
-    // Seleccionar una posición aleatoria válida de manera segura
     const randomIndex = getSecureRandomIndex(validPositions.length);
     return validPositions[randomIndex];
 }
@@ -400,7 +399,6 @@ function startCountdown() {
             clearInterval(countdownInterval);
             countdownDisplay.style.display = "none"; // Oculta el contador
             canMove = true; // Permitir el movimiento
-            //console.log("¡Los jugadores pueden moverse!");
         }
     }, 1000); // Actualizar cada segundo
 }
