@@ -110,7 +110,6 @@ function movePlayer(direction) {
             position: playerPosition,
         }));
 
-       //console.log(`Jugador ${username} movido a posición ${playerPosition}`);
         updateGrid(); // Actualizar la cuadrícula local
         if (!isBallMoving) {
             checkCollision(); // Verifica si el jugador colisiona con la pelota
@@ -164,13 +163,11 @@ function getRandomColor() {
 
 function isPositionOccupied(position) {
     const occupied = Object.values(players).some(player => player.position === position);
-    //console.log(`Posición ${position} ocupada: ${occupied}`);
     return occupied;
 }
 
 function isObstacle(position) {
     const obstacle = obstacles.includes(position);
-    //console.log(`Posición ${position} es obstáculo: ${obstacle}`);
     return obstacle;
 }
 
@@ -179,14 +176,13 @@ function handleServerMessage(event) {
     try {
         const data = JSON.parse(event.data); // Analiza los datos JSON recibidos
         //console.log("Estado recibido del servidor:", data);
-        
+
         switch (data.type) {
             case 'move':
                 // Actualiza solo la posición del jugador que se movió
                 if (data.username && players[data.username]) {
                     players[data.username].position = data.position;
             
-                    //console.log(`Jugador ${data.username} movido a posición ${data.position}`);
                     updateGrid(); // Redibuja la cuadrícula
                 } else {
                     console.warn("Movimiento recibido para un jugador desconocido o inválido:", data);
@@ -220,7 +216,6 @@ function handleServerMessage(event) {
                 break;
 
             case "chat":
-                const chat = document.getElementById("chat");
                 chat.value += `${data.username}: ${data.text}\n`;
                 chat.scrollTop = chat.scrollHeight; // Desplazamiento automático
                 break;
@@ -253,7 +248,6 @@ function initializeWebSocket() {
                 color: playerColor,
             })
         );
-        //placeBall();
     };
 
     socket.onmessage =  socket.onmessage = handleServerMessage; 
@@ -308,7 +302,6 @@ function launchBall() {
         const isAtLeftEdge = ballDirection === -1 && nextPosition % 11 === 0;
         const isAtRightEdge = ballDirection === 1 && nextPosition % 11 === 10;
         const isOutOfBounds = nextPosition < 0 || nextPosition >= gridCells.length;
-        const isBlocked = isObstacle(nextPosition);
 
         if (isAtLeftEdge || isAtRightEdge || isOutOfBounds) {
             console.log("Pelota detenida por borde u obstáculo.");
@@ -412,11 +405,9 @@ function toggleReady() {
     if (readyButton.textContent === "Listo") {
         readyButton.textContent = "No Listo";
         readyButton.style.backgroundColor = "red";
-        //console.log("Jugador marcado como no listo");
     } else {
         readyButton.textContent = "Listo";
         readyButton.style.backgroundColor = "green";
-        //console.log("Jugador marcado como listo");
 
         // Iniciar la cuenta regresiva
         //console.log("Iniciando cuenta regresiva...");
