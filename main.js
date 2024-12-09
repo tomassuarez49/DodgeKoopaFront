@@ -32,7 +32,7 @@ function createGrid() {
 }
 
 function addPlayerToGrid() {
-    const assignedPosition = Math.floor(Math.random() * gridCells.length);
+        const randomPosition = getRandomInt(0, 109); // Tamaño del grid (10x11)
     playerPosition = assignedPosition;
     playerColor = getRandomColor();
 
@@ -157,7 +157,8 @@ function getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
     for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
+    const randomIndex = window.crypto.getRandomValues(new Uint8Array(1))[0] % 16;
+    color += letters[randomIndex];
     }
     return color;
 }
