@@ -32,6 +32,7 @@ function createGrid() {
 }
 
 function addPlayerToGrid() {
+    const assignedPosition = Math.floor(Math.random() * gridCells.length);
     playerPosition = assignedPosition;
     playerColor = getRandomColor();
 
