@@ -81,7 +81,11 @@
             try {
                 // Obtiene la configuración dinámica desde el backend
                 const msalConfig = await getMsalConfig();
-                console.log("MSAL Config:", msalConfig);
+                console.log("MSAL Configuración cargada:", msalConfig);
+                console.log("Client ID:", msalConfig.auth.clientId);
+                console.log("Redirect URI:", msalConfig.auth.redirectUri);
+                console.log("Authority:", msalConfig.auth.authority);
+
                 const msalInstance = new msal.PublicClientApplication(msalConfig);
 
                 // Verifica si el usuario ya está autenticado
