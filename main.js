@@ -31,8 +31,14 @@ function createGrid() {
     }
 }
 
+function getSecureRandomIndex(maxValue) {
+    const randomValues = new Uint32Array(1);
+    window.crypto.getRandomValues(randomValues); // Genera un valor seguro aleatorio
+    return randomValues[0] % maxValue; // Normaliza el valor para el rango [0, maxValue - 1]
+}
+
 function addPlayerToGrid() {
-    const assignedPosition = Math.floor(Math.random() * gridCells.length);
+    const assignedPosition = getSecureRandomIndex(gridCells.length); // Usar el generador seguro
     playerPosition = assignedPosition;
     playerColor = getRandomColor();
 
@@ -40,6 +46,7 @@ function addPlayerToGrid() {
 
     updateGrid();
 }
+
 
 
 
