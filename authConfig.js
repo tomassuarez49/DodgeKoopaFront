@@ -2,10 +2,6 @@ export async function getMsalConfig() {
     // Cambia la URL a la de tu backend desplegado
     const response = await fetch('https://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net/api/secret/idclient');
     
-    const jsonResponse = await response.json();
-    console.log("Contenido del cuerpo procesado (JSON):", jsonResponse);
-    
-    console.log("Respuesta del backend:", jsonResponse);
     if (!response.ok) {
         throw new Error('Error al obtener el Client ID desde el backend');
     }
@@ -16,7 +12,7 @@ export async function getMsalConfig() {
     // Configuración dinámica
     return {
         auth: {
-            clientId: secret.value, // Obtiene el Client ID desde el backend
+            clientId: secret, // Obtiene el Client ID desde el backend
             authority: "https://login.microsoftonline.com/common", // Ajusta según tu tenant
             redirectUri: "https://brave-beach-04727251e.4.azurestaticapps.net/game.html", // URL de tu frontend en producción
         },
