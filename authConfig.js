@@ -1,7 +1,11 @@
 export async function getMsalConfig() {
     // Cambia la URL a la de tu backend desplegado
     const response = await fetch('https://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net/api/secret/idclient');
-    console.log("Respuesta del backend:", response);
+    
+    const jsonResponse = await response.json();
+    console.log("Contenido del cuerpo procesado (JSON):", jsonResponse);
+    
+    console.log("Respuesta del backend:", jsonResponse);
     if (!response.ok) {
         throw new Error('Error al obtener el Client ID desde el backend');
     }
