@@ -34,7 +34,6 @@
         // Manejar la entrada de texto para deshabilitar caracteres no permitidos
         function handleInput() {
             const usernameInput = document.querySelector('input[type="text"]');
-            usernameInput.value = usernameInput.value.replace(/[^a-zA-Z0-9_.-]/g, "");
             const submitButton = document.getElementById("submitButton");
 
             // Validar caracteres permitidos
@@ -67,13 +66,6 @@
 
             // Redirigir según la opción seleccionada
             const selectedOption = document.getElementById("gameOption").value;
-
-            const validOptions = ["play", "join", "create"];
-    if (!validOptions.includes(selectedOption)) {
-        alert("Opción no válida");
-        return;
-    }
-
             if (selectedOption === "play") {
                 window.location.href = "./game.html";
             } else if (selectedOption === "join") {
