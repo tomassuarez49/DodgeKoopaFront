@@ -1,6 +1,6 @@
 export async function getMsalConfig() {
     // Cambia la URL a la de tu backend desplegado
-    const response = await fetch('dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net');
+    const response = await fetch('https://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net');
     if (!response.ok) {
         throw new Error('Error al obtener el Client ID desde el backend');
     }
