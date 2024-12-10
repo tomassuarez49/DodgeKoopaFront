@@ -12,7 +12,7 @@ export async function getMsalConfig() {
     return {
         auth: {
             clientId: secret.value, // Obtiene el Client ID desde el backend
-            authority: "https://login.microsoftonline.com/common", // Ajusta según tu tenant
+            authority: "https://login.microsoftonline.com/a3a50919-aab4-4251-8353-c57eb9725cc2  ", // Ajusta según tu tenant
             redirectUri: "https://brave-beach-04727251e.4.azurestaticapps.net/game.html", // URL de tu frontend en producción
         },
         cache: {
