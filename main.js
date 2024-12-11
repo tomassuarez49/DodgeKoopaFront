@@ -175,24 +175,24 @@ function isObstacle(position) {
 }
 
 function handleServerMessage(event) {
-
+    
     try {
         const data = JSON.parse(event.data); // Analiza los datos JSON recibidos
         //console.log("Estado recibido del servidor:", data);
-
+        
         switch (data.type) {
             case 'move':
                 // Actualiza solo la posición del jugador que se movió
                 if (data.username && players[data.username]) {
                     players[data.username].position = data.position;
-
+            
                     //console.log(`Jugador ${data.username} movido a posición ${data.position}`);
                     updateGrid(); // Redibuja la cuadrícula
                 } else {
                     console.warn("Movimiento recibido para un jugador desconocido o inválido:", data);
                 }
                 break;
-
+            
             case 'updateGameState':
                 // Actualiza el estado completo de jugadores (si es necesario)
                 if (data.players) {
@@ -212,7 +212,7 @@ function handleServerMessage(event) {
                 players[data.username] = data.playerData;
                 updateGrid();
                 break;
-
+                    
             case "ballUpdate":
                 ballPosition = data.position;
                 isBallOnBoard = data.isBallOnBoard;
@@ -235,8 +235,7 @@ function handleServerMessage(event) {
 
 
 function initializeWebSocket() {
-    //socket = new WebSocket('ws://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
-    socket = new WebSocket('wss://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
+    socket = new WebSocket('wss://dodgekoopaback-cgc4grgdefhxakav.centralus-01.azurewebsites.net');// Cambia localhost si el servidor está en otro lugar
 
     socket.onopen = () => {
         console.log('WebSocket conectado.');
@@ -311,11 +310,11 @@ function launchBall() {
         const isOutOfBounds = nextPosition < 0 || nextPosition >= gridCells.length;
         const isBlocked = isObstacle(nextPosition);
 
-        if (isAtLeftEdge || isAtRightEdge || isOutOfBounds || isBlocked) {
+        if (isAtLeftEdge || isAtRightEdge || isOutOfBounds) {
             console.log("Pelota detenida por borde u obstáculo.");
             ballPosition = getNewBallPosition(ballDirection === -1 ? 'left' : 'right'); // Cambiar al otro extremo
             console.log(`Pelota reaparece en la posición: ${ballPosition}`);
-
+            
             // Notificar al servidor la nueva posición de la pelota
             socket.send(JSON.stringify({
                 type: 'updateBall',
@@ -330,9 +329,10 @@ function launchBall() {
 
         // Detectar si la pelota golpea a un jugador
         const hitPlayer = Object.keys(players).find(player =>
-            players[player].position === nextPosition
-        );
-
+            {
+                console.log(`Verificando jugador ${player} en posición ${players[player].position}`);
+                return players[player].position === nextPosition;
+            } );
         if (hitPlayer) {
             console.log(`¡La pelota golpeó al jugador ${hitPlayer}!`);
             socket.send(JSON.stringify({
@@ -340,10 +340,12 @@ function launchBall() {
                 username: hitPlayer,
             }));
 
-            // Eliminar al jugador golpeado
+            // Detener la pelota y eliminar al jugador del cliente
             delete players[hitPlayer];
-            updateGrid(); // Actualizar la cuadrícula para reflejar la eliminación
-            // No detener la pelota: continuar moviéndola
+            updateGrid();
+            clearInterval(interval);
+            isBallMoving = false;
+            return;
         }
 
         // Actualizar la posición de la pelota
@@ -357,7 +359,7 @@ function launchBall() {
 
         // Redibujar la cuadrícula
         updateGrid();
-    }, 300); // Velocidad del movimiento (300 ms)
+    }, 300); // Velocidad del movimiento (200 ms)
 }
 
 
@@ -454,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addPlayerToGrid(); // Agregar el jugador al tablero
     //placeBall(); // Colocar la pelota en una posición aleatoria válida
 
-
+    
 
 
     // Agregar evento para capturar las teclas
