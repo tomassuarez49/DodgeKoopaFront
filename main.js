@@ -221,8 +221,9 @@ function handleServerMessage(event) {
 
             case "chat":
                 const chat = document.getElementById("chat");
-                chat.value += `${data.username}: ${data.text}\n`;
-                chat.scrollTop = chat.scrollHeight; // Desplazamiento automático
+                const formattedMessage = `${data.username}: ${data.text}`;
+                chat.value += `${formattedMessage}\n`;
+                chat.scrollTop = chat.scrollHeight; // Hacer scroll automáticamente al final
                 break;
 
             default:
@@ -434,6 +435,32 @@ function checkCollision() {
         launchBall(); // Inicia el lanzamiento de la pelota
     }
 }
+
+function sendMessage() {
+    const chatInput = document.getElementById("chatInput");
+    const message = chatInput.value.trim();
+
+    // Validar si hay mensaje y si el socket está conectado
+    if (!message) {
+        alert("Por favor, escribe un mensaje antes de enviarlo.");
+        return;
+    }
+    if (socket.readyState !== WebSocket.OPEN) {
+        console.error("El WebSocket no está conectado. No se puede enviar el mensaje.");
+        return;
+    }
+
+    // Enviar el mensaje al servidor
+    socket.send(JSON.stringify({
+        type: "chat",
+        username: username,
+        text: message,
+    }));
+
+    // Limpiar el campo de entrada
+    chatInput.value = "";
+}
+
 
 
 
