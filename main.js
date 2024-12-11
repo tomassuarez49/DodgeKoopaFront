@@ -436,9 +436,14 @@ function checkCollision() {
     }
 }
 
+function sanitizeInput(input) {
+    return input.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+
 function sendMessage() {
-    const chatInput = document.getElementById("chatInput");
-    const message = chatInput.value.trim();
+    const chatInput = document.getElementById("message");
+    const message = sanitizeInput(chatInput.value.trim());
 
     // Validar si hay mensaje y si el socket está conectado
     if (!message) {
