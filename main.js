@@ -31,14 +31,8 @@ function createGrid() {
     }
 }
 
-function getSecureRandomIndex(maxValue) {
-    const randomValues = new Uint32Array(1);
-    window.crypto.getRandomValues(randomValues); // Genera un valor seguro aleatorio
-    return randomValues[0] % maxValue; // Normaliza el valor para el rango [0, maxValue - 1]
-}
-
 function addPlayerToGrid() {
-    const assignedPosition = getSecureRandomIndex(gridCells.length); // Usar el generador seguro
+    const assignedPosition = Math.floor(Math.random() * gridCells.length);
     playerPosition = assignedPosition;
     playerColor = getRandomColor();
 
@@ -46,7 +40,6 @@ function addPlayerToGrid() {
 
     updateGrid();
 }
-
 
 
 
@@ -118,6 +111,7 @@ function movePlayer(direction) {
             position: playerPosition,
         }));
 
+       //console.log(`Jugador ${username} movido a posición ${playerPosition}`);
         updateGrid(); // Actualizar la cuadrícula local
         if (!isBallMoving) {
             checkCollision(); // Verifica si el jugador colisiona con la pelota
@@ -163,24 +157,25 @@ function getRandomColor() {
     const letters = '0123456789ABCDEF';
     let color = '#';
     for (let i = 0; i < 6; i++) {
-    const randomIndex = window.crypto.getRandomValues(new Uint8Array(1))[0] % 16;
-    color += letters[randomIndex];
+        color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
 }
 
 function isPositionOccupied(position) {
     const occupied = Object.values(players).some(player => player.position === position);
+    //console.log(`Posición ${position} ocupada: ${occupied}`);
     return occupied;
 }
 
 function isObstacle(position) {
     const obstacle = obstacles.includes(position);
+    //console.log(`Posición ${position} es obstáculo: ${obstacle}`);
     return obstacle;
 }
 
 function handleServerMessage(event) {
-    
+
     try {
         const data = JSON.parse(event.data); // Analiza los datos JSON recibidos
         //console.log("Estado recibido del servidor:", data);
@@ -190,13 +185,14 @@ function handleServerMessage(event) {
                 // Actualiza solo la posición del jugador que se movió
                 if (data.username && players[data.username]) {
                     players[data.username].position = data.position;
-            
+
+                    //console.log(`Jugador ${data.username} movido a posición ${data.position}`);
                     updateGrid(); // Redibuja la cuadrícula
                 } else {
                     console.warn("Movimiento recibido para un jugador desconocido o inválido:", data);
                 }
                 break;
-            
+
             case 'updateGameState':
                 // Actualiza el estado completo de jugadores (si es necesario)
                 if (data.players) {
@@ -216,7 +212,7 @@ function handleServerMessage(event) {
                 players[data.username] = data.playerData;
                 updateGrid();
                 break;
-                    
+
             case "ballUpdate":
                 ballPosition = data.position;
                 isBallOnBoard = data.isBallOnBoard;
@@ -224,6 +220,7 @@ function handleServerMessage(event) {
                 break;
 
             case "chat":
+                const chat = document.getElementById("chat");
                 chat.value += `${data.username}: ${data.text}\n`;
                 chat.scrollTop = chat.scrollHeight; // Desplazamiento automático
                 break;
@@ -238,6 +235,7 @@ function handleServerMessage(event) {
 
 
 function initializeWebSocket() {
+    //socket = new WebSocket('ws://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
     socket = new WebSocket('wss://koopabalancer.centralus.cloudapp.azure.com');// Cambia localhost si el servidor está en otro lugar
 
     socket.onopen = () => {
@@ -256,6 +254,7 @@ function initializeWebSocket() {
                 color: playerColor,
             })
         );
+        //placeBall();
     };
 
     socket.onmessage =  socket.onmessage = handleServerMessage; 
@@ -265,31 +264,24 @@ function initializeWebSocket() {
     };
 }
 
-function getSecureRandomIndex(arrayLength) {
-    const randomValues = new Uint32Array(1);
-    window.crypto.getRandomValues(randomValues); // Genera un valor seguro aleatorio
-    return randomValues[0] % arrayLength; // Normaliza el valor para el rango
-}
-
-
 function placeBall() {
     let validPositionFound = false;
 
-while (!validPositionFound) {
-    const randomPosition = getSecureRandomIndex(gridCells.length);
+    while (!validPositionFound) {
+        const randomPosition = Math.floor(Math.random() * gridCells.length);
 
-    if (!obstacles.includes(randomPosition) && !isPositionOccupied(randomPosition)) {
-        ballPosition = randomPosition;
-        validPositionFound = true;
+        if (!obstacles.includes(randomPosition) && !isPositionOccupied(randomPosition)) {
+            ballPosition = randomPosition;
+            validPositionFound = true;
 
-        // Notificar al servidor sobre la nueva posición de la pelota
-        socket.send(JSON.stringify({
-            type: 'ballUpdate',
-            position: ballPosition,
-            isBallOnBoard: true,
-        }));
+            // Notificar al servidor sobre la nueva posición de la pelota
+            socket.send(JSON.stringify({
+                type: 'ballUpdate',
+                position: ballPosition,
+                isBallOnBoard: true,
+            }));
+        }
     }
-}
 
     console.log(`Pelota colocada en la posición: ${ballPosition}`);
     updateGrid();
@@ -317,12 +309,13 @@ function launchBall() {
         const isAtLeftEdge = ballDirection === -1 && nextPosition % 11 === 0;
         const isAtRightEdge = ballDirection === 1 && nextPosition % 11 === 10;
         const isOutOfBounds = nextPosition < 0 || nextPosition >= gridCells.length;
+        const isBlocked = isObstacle(nextPosition);
 
         if (isAtLeftEdge || isAtRightEdge || isOutOfBounds) {
             console.log("Pelota detenida por borde u obstáculo.");
             ballPosition = getNewBallPosition(ballDirection === -1 ? 'left' : 'right'); // Cambiar al otro extremo
             console.log(`Pelota reaparece en la posición: ${ballPosition}`);
-            
+
             // Notificar al servidor la nueva posición de la pelota
             socket.send(JSON.stringify({
                 type: 'updateBall',
@@ -386,7 +379,8 @@ function getNewBallPosition(side) {
         return !isBlocked && !isOccupied;
     });
 
-    const randomIndex = getSecureRandomIndex(validPositions.length);
+    // Seleccionar una posición aleatoria válida
+    const randomIndex = Math.floor(Math.random() * validPositions.length);
     return validPositions[randomIndex];
 }
 
@@ -407,6 +401,7 @@ function startCountdown() {
             clearInterval(countdownInterval);
             countdownDisplay.style.display = "none"; // Oculta el contador
             canMove = true; // Permitir el movimiento
+            //console.log("¡Los jugadores pueden moverse!");
         }
     }, 1000); // Actualizar cada segundo
 }
@@ -418,9 +413,11 @@ function toggleReady() {
     if (readyButton.textContent === "Listo") {
         readyButton.textContent = "No Listo";
         readyButton.style.backgroundColor = "red";
+        //console.log("Jugador marcado como no listo");
     } else {
         readyButton.textContent = "Listo";
         readyButton.style.backgroundColor = "green";
+        //console.log("Jugador marcado como listo");
 
         // Iniciar la cuenta regresiva
         //console.log("Iniciando cuenta regresiva...");
@@ -460,7 +457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addPlayerToGrid(); // Agregar el jugador al tablero
     //placeBall(); // Colocar la pelota en una posición aleatoria válida
 
-    
+
 
 
     // Agregar evento para capturar las teclas
