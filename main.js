@@ -311,7 +311,7 @@ function launchBall() {
         const isOutOfBounds = nextPosition < 0 || nextPosition >= gridCells.length;
         const isBlocked = isObstacle(nextPosition);
 
-        if (isAtLeftEdge || isAtRightEdge || isOutOfBounds) {
+        if (isAtLeftEdge || isAtRightEdge || isOutOfBounds || isBlocked) {
             console.log("Pelota detenida por borde u obstáculo.");
             ballPosition = getNewBallPosition(ballDirection === -1 ? 'left' : 'right'); // Cambiar al otro extremo
             console.log(`Pelota reaparece en la posición: ${ballPosition}`);
@@ -330,10 +330,9 @@ function launchBall() {
 
         // Detectar si la pelota golpea a un jugador
         const hitPlayer = Object.keys(players).find(player =>
-            {
-                console.log(`Verificando jugador ${player} en posición ${players[player].position}`);
-                return players[player].position === nextPosition;
-            } );
+            players[player].position === nextPosition
+        );
+
         if (hitPlayer) {
             console.log(`¡La pelota golpeó al jugador ${hitPlayer}!`);
             socket.send(JSON.stringify({
@@ -341,12 +340,10 @@ function launchBall() {
                 username: hitPlayer,
             }));
 
-            // Detener la pelota y eliminar al jugador del cliente
+            // Eliminar al jugador golpeado
             delete players[hitPlayer];
-            updateGrid();
-            clearInterval(interval);
-            isBallMoving = false;
-            return;
+            updateGrid(); // Actualizar la cuadrícula para reflejar la eliminación
+            // No detener la pelota: continuar moviéndola
         }
 
         // Actualizar la posición de la pelota
@@ -360,7 +357,7 @@ function launchBall() {
 
         // Redibujar la cuadrícula
         updateGrid();
-    }, 300); // Velocidad del movimiento (200 ms)
+    }, 300); // Velocidad del movimiento (300 ms)
 }
 
 
